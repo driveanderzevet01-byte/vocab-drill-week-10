@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vocab Drill | Week 10 (Days 25-27) | Proctored Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c15;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #11131f;
+            border-radius: 32px;
+            padding: 24px 28px;
+            border: 1px solid #252a41;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.6);
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+        }
+
+        .timer-panel {
+            background: #0b0d16;
+            padding: 12px 24px;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-left: 5px solid #facc15;
+            font-weight: 600;
+        }
+
+        .timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #facc15;
+            background: #00000030;
+            padding: 0 12px;
+            border-radius: 40px;
+        }
+
+        .card {
+            background: #151b2b;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 28px;
+            border: 1px solid #2d3450;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #b9c3e0;
+        }
+
+        input, select {
+            background: #0a0e1a;
+            border: 1px solid #2f3a5c;
+            padding: 12px 16px;
+            border-radius: 20px;
+            width: 100%;
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 2px rgba(129,140,248,0.3);
+        }
+
+        button {
+            background: #2d3a5e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 20px;
+            margin-right: 12px;
+        }
+
+        button.primary {
+            background: #4f46e5;
+            box-shadow: 0 4px 14px rgba(79,70,229,0.4);
+        }
+
+        button.primary:hover {
+            background: #6366f1;
+            transform: scale(0.98);
+        }
+
+        button.danger {
+            background: #dc2626;
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .vocab-item {
+            background: #1a1f33;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border-left: 4px solid #818cf8;
+        }
+
+        .vocab-word {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #facc15;
+        }
+
+        .question-card {
+            background: #13182a;
+            padding: 18px;
+            border-radius: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #293054;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .option label {
+            margin: 0;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .wordbank-box {
+            background: #0c1020;
+            padding: 18px;
+            border-radius: 24px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #2d3a66;
+        }
+
+        .wordbank-word {
+            background: #1e2a4a;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .popup-card {
+            background: #1a1f2e;
+            max-width: 900px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 28px;
+            border-radius: 36px;
+            box-shadow: 0 25px 40px black;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .answer-summary {
+            background: #0e1222;
+            padding: 16px;
+            border-radius: 24px;
+            font-family: 'Segoe UI', system-ui, monospace;
+            font-size: 0.85rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .summary-question {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a3250;
+        }
+
+        .summary-question strong {
+            color: #facc15;
+        }
+
+        .summary-answer {
+            margin-left: 20px;
+            color: #a5b4fc;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .no-print, .timer-panel, button, .popup, #summaryPopup {
+                display: none !important;
+            }
+            .print-pattern {
+                background: repeating-linear-gradient(45deg, #f0f2f5 0px, #f0f2f5 3px, #ffffff 3px, #ffffff 15px);
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                color: black;
+                box-shadow: none;
+            }
+            .answer-summary {
+                background: #f8f9fc;
+                border: 1px solid #ccc;
+                color: black;
+            }
+            .summary-question strong {
+                color: #1e293b;
+            }
+            .summary-answer {
+                color: #334155;
+            }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 25px;
+            color: #5a668a;
+        }
+        hr {
+            border-color: #2a3250;
+        }
+        .section-title {
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4f46e5;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="appRoot">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+        <div class="card" style="max-width: 550px; margin: 40px auto;">
+            <h1 class="gradient-text">📘 VOCAB DRILL</h1>
+            <p style="margin: 8px 0 20px 0;">Week 10 - Proctored vocabulary assessment (Days 25, 26, 27)</p>
+            <label>Student Name</label>
+            <input type="text" id="studentName" placeholder="e.g., Ahmad Fauzi">
+            <label>Student ID</label>
+            <input type="text" id="studentId" placeholder="e.g., 22051234">
+            <label>Study Program</label>
+            <input type="text" id="studyProgram" placeholder="e.g., English Literature">
+            <label>Select Day</label>
+            <select id="daySelect">
+                <option value="day25">Day 25 (Vocabulary 2401-2500)</option>
+                <option value="day26">Day 26 (Vocabulary 2501-2600)</option>
+                <option value="day27">Day 27 (Vocabulary 2601-2700)</option>
+            </select>
+            <button class="primary" id="startBtn" style="width: 100%; margin-top: 28px;">▶ Begin Session</button>
+        </div>
+    </div>
+
+    <!-- VOCAB LIST PAGE (5 min timer) -->
+    <div id="vocabListPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>📖 Review mode:</span>
+            <span class="timer" id="listTimer">05:00</span>
+            <span>time left</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <h2>📚 Vocabulary List: <span id="listDayLabel"></span></h2>
+            <button id="proceedToDrillBtn" class="primary">➡ Proceed to Drill</button>
+        </div>
+        <div class="vocab-grid" id="vocabListContainer"></div>
+    </div>
+
+    <!-- DRILL PAGE (25 min timer) -->
+    <div id="drillPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>✍️ Drill in progress:</span>
+            <span class="timer" id="drillTimer">25:00</span>
+            <span>auto-submit at 0</span>
+        </div>
+        <div id="drillQuestionsContainer"></div>
+        <div style="margin: 20px 0;">
+            <button id="submitDrillBtn" class="primary">✅ Submit Exam & Show Summary</button>
+        </div>
+    </div>
+
+    <!-- SUMMARY + PRINT POPUP -->
+    <div id="summaryPopup" class="popup hidden">
+        <div class="popup-card">
+            <h3>📄 Submission Summary (Questions & Answers)</h3>
+            <div id="summaryContent" class="answer-summary"></div>
+            <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button id="closeSummaryBtn" class="danger">Close</button>
+                <button id="printSummaryBtn" class="primary">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= FULL VOCAB DATABASE (from file - Week 10) =======================
+    const fullVocab = [];
+
+    function pushEntries(arr) {
+        for (let i = 0; i < arr.length; i += 3) {
+            fullVocab.push({ word: arr[i], eng: arr[i+1], ind: arr[i+2] });
+        }
+    }
+
+    // DAY 25 (2401-2500)
+    const day25Raw = ["elapse","to pass (time)","berlalu","elasticity","flexibility","elastisitas","electrolysis","chemical decomposition","elektrolisis","electronically","via electronic means","secara elektronik","electrotype","printing plate","elektrotipe","elegant","graceful","elegan","elegy","mournful poem","elegi","element","component","elemen","elementary","basic","dasar","elevate","to raise","mengangkat","elicit","to draw out","memancing","eligible","qualified","memenuhi syarat","eliminate","to remove","menghilangkan","Elizabethan","related to Queen Elizabeth","zaman Elizabeth","elocution","public speaking","pidato","eloquent","fluent","fasih","elucidate","to explain","menjelaskan","elude","to escape","menghindari","elusion","evasion","penghindaran","emaciate","to become thin","kurus","e-mail","electronic mail","surel","emanate","to originate","berasal","emancipate","to free","membebaskan","embargo","trade ban","embargo","embark","to board","naik","embarrass","to shame","mempermalukan","embed","to fix firmly","menanam","embellish","to decorate","memperindah","embezzle","to steal money","menggelapkan","emblazon","to display","memamerkan","emblem","symbol","lambang","embody","to represent","mewujudkan","embolden","to encourage","memberanikan","embolism","blockage","emboli","embrace","to hug","memeluk","embroil","to involve","melibatkan","emerge","to appear","muncul","emergence","appearance","kemunculan","emergency","crisis","darurat","emergent","arising","muncul","emeritus","retired honorably","emeritus","emigrant","one who emigrates","emigran","emigrate","to leave country","beremigrasi","eminence","fame","ketenaran","eminent","famous","terkenal","emission","discharge","emisi","emit","to release","memancarkan","emphasis","stress","penekanan","emphasize","to stress","menekankan","emphatic","forceful","tegas","employ","to hire","mempekerjakan","employee","worker","karyawan","employer","company","majikan","employment","job","pekerjaan","emporium","store","toko","empower","to authorize","memberdayakan","empty","containing nothing","kosong","empty a trash can","to take out trash","mengosongkan tempat sampah","emulate","to imitate","meniru","enable","to make possible","memungkinkan","enact","to make law","memberlakukan","enamor","to charm","mempesona","encamp","to set up camp","berkemah","enchant","to delight","mempesona","encircle","to surround","mengepung","enclose","to surround","melampirkan","enclosed","surrounded","tertutup","encomium","praise","pujian","encompass","to include","mencakup","encore","repeat performance","tambahan","encounter","to meet","bertemu","encourage","to motivate","mendorong","encouraging","inspiring","menggembirakan","encroach","to intrude","melanggar","encumber","to burden","membebani","encyclical","papal letter","ensiklik","encyclopedia","reference work","ensiklopedia","end up","to finally become","berakhir","endanger","to threaten","membahayakan","endangered","at risk","terancam punah","endear","to make beloved","membuat disayang","endeavor","to try","berusaha","endemic","native","endemik","endless","infinite","tak berujung","endorse","to support","mendukung","endow","to provide funds","mendanai","endowment","donation","sumbangan dana","endue","to provide","memberikan","endurable","bearable","dapat ditahan","endurance","stamina","ketahanan","endure","to bear","bertahan","enemy","foe","musuh","energetic","active","energik","energy drink","stimulant drink","minuman energi","enervate","to weaken","melemahkan","enfeeble","to weaken","melemahkan","enforce","to impose","memberlakukan","enfranchise","to grant voting rights","memberi hak pilih","engage","to participate; to hire","terlibat; mempekerjakan","engender","to produce","menimbulkan"];
+    pushEntries(day25Raw);
+    
+    // DAY 26 (2501-2600)
+    const day26Raw = ["engrave","to carve","mengukir","engross","to absorb attention","menyita perhatian","enhance","to improve","meningkatkan","enigma","mystery","teka-teki","enjoin","to order","memerintahkan","enkindle","to ignite","menyalakan","enlarge","to make bigger","memperbesar","enlighten","to inform","mencerahkan","enlist","to recruit","mendaftarkan","enliven","to animate","menghidupkan","enmity","hostility","permusuhan","ennoble","to dignify","memuliakan","enormity","extreme evil","kebusukan","enormous","huge","sangat besar","enough","sufficient","cukup","enrage","to anger","memarahkan","enrapture","to delight","mempesona","enroll","to register","mendaftar","enshrine","to preserve","melestarikan","ensnare","to trap","menjebak","ensue","to follow","menyusul","ensure","to guarantee","memastikan","entail","to involve","memerlukan","entangle","to tangle","menjerat","enterprise","business","perusahaan","enterprising","ambitious","giat","entertain","to amuse","menghibur","enthrall","to captivate","memikat","enthrone","to crown","menobatkan","enthuse","to show enthusiasm","antusias","enthusiasm","excitement","antusiasme","enthusiastic","eager","bersemangat","entice","to tempt","memikat","entire","whole","seluruh","entirely","completely","seluruhnya","entirety","whole","keseluruhan","entitle","to give right","memberi hak","entity","being","entitas","entomology","insect study","entomologi","entrails","internal organs","isi perut","entreaty","plea","permohonan","entree","entrance","pintu masuk","entrench","to establish firmly","mengukuhkan","entrepreneur","business founder","wirausaha","entry","entrance","pintu masuk","entry fee","admission cost","biaya masuk","entwine","to twist together","melilit","enumerate","to list","menyebutkan satu per satu","envelop","to surround","menyelimuti","envelope","paper cover","amplop","environment","surroundings","lingkungan","environmental","related to nature","lingkungan hidup","envision","to imagine","membayangkan","envy","jealousy","iri hati","epic","heroic poem","epik","epicure","food lover","pencinta kuliner","Epicurean","pleasure-seeking","hedonis","epicycle","small circle","epicycle","epicycloid","geometric curve","episikloid","epidemic","widespread disease","epidemi","epidermis","outer skin","epidermis","epigram","witty saying","kata mutiara","epilogue","concluding section","epilog","epiphany","sudden realization","pencerahan","episode","event; installment","episode","epitaph","tomb inscription","batu nisan","epithet","descriptive phrase","julukan","epitome","perfect example","lambang","epizootic","animal epidemic","epizootik","epoch","period","zaman","epode","lyric poem","epode","equal","same","sama","equalize","to make equal","menyamakan","equanimity","composure","ketenangan","equestrian","horse rider","penunggang kuda","equilibrium","balance","keseimbangan","equip","to supply","melengkapi","equipment","supplies","peralatan","equitable","fair","adil","equity","fairness","keadilan","equivalent","equal","setara","equivocal","ambiguous","ambigu","equivocally","ambiguously","secara ambigu","equivocate","to be ambiguous","berbelit-belit","era","period","era","eradicate","to eliminate","memberantas","erect","to build; upright","mendirikan; tegak","errant","straying","menyimpang","erratic","unpredictable","tak menentu","erroneous","wrong","salah","error","mistake","kesalahan","erudite","learned","terpelajar","erudition","scholarship","pengetahuan luas","escape","to flee","melarikan diri","eschew","to avoid","menghindari","escort","to accompany","mengawal","especially","particularly","terutama","espy","to catch sight of","melihat","esquire","title of respect","gelar kehormatan","essence","core nature","inti"];
+    pushEntries(day26Raw);
+    
+    // DAY 27 (2601-2700)
+    const day27Raw = ["essential","necessary","penting","establish","to set up","mendirikan","esteem","respect","penghargaan","esthetic","artistic","estetis","estimable","worthy of respect","terhormat","estimate","to approximate","memperkirakan","estrange","to alienate","menjauhkan","estuary","river mouth","muara sungai","et cetera","and so forth","dan lain-lain","eternal","everlasting","abadi","eugenic","improving race","eugenika","eulogize","to praise","memuji","eulogy","praise speech","pidato pujian","euphemism","mild expression","eufemisme","euphonious","pleasant sounding","merdu","euphony","pleasant sound","kemerduan","eureka","I found it!","eureka","evade","to avoid","menghindari","evaluation","assessment","evaluasi","evanesce","to fade away","lenyap","evanescent","fleeting","cepat berlalu","evangelical","mission-driven","injili","evangelist","preacher","penginjil","evaporate","to vaporize","menguap","evasion","avoidance","penghindaran","even","level; also","rata; bahkan","evening news","nightly broadcast","berita malam","evenly","equally","merata","event","occurrence","acara","eventual","ultimate","akhirnya","eventually","in the end","pada akhirnya","evert","to turn outward","membalik","evict","to expel","mengusir","evidence","proof","bukti","evident","obvious","jelas","evidential","providing proof","bersifat bukti","evil","morally bad","jahat","evince","to reveal","menunjukkan","evoke","to call forth","membangkitkan","evolution","gradual development","evolusi","evolve","to develop","berkembang","exacerbate","to worsen","memperburuk","exact","precise","tepat","exactly","precisely","tepatnya","exaggerate","to overstate","membesar-besarkan","examination","test","ujian","examine","to inspect","memeriksa","exasperate","to annoy","membuat jengkel","excavate","to dig","menggali","exceed","to surpass","melebihi","excel","to do very well","unggul","excellence","greatness","keunggulan","excellency","title of honor","Yang Mulia","excellent","outstanding","sangat baik","excellently","very well","dengan sangat baik","exception","exclusion","pengecualian","exceptional","outstanding","luar biasa","excerpt","passage","kutipan","excess","surplus","kelebihan","excessive","too much","berlebihan","exchange","to swap","menukar","excitable","easily excited","mudah terangsang","excitation","excitement","kegembiraan","excite","to thrill","menggembirakan","excited","thrilled","bersemangat","exclamation","sudden cry","seruan","exclude","to leave out","mengecualikan","exclusion","leaving out","pengecualian","exclusive","limited to a few","eksklusif","exclusively","solely","secara eksklusif","excrescence","abnormal growth","pertumbuhan abnormal","excretion","waste removal","ekskresi","excruciate","to torment","menyiksa","excursion","short trip","perjalanan singkat","excusable","forgivable","dapat dimaafkan","execrable","extremely bad","sangat buruk","execration","curse","kutukan","execute","to carry out; to kill","melaksanakan; mengeksekusi","executor","will administrator","pelaksana wasiat","exegesis","critical explanation","penjelasan kritis","exemplar","model","teladan","exemplary","outstanding","teladan","exemplify","to illustrate","mencontohkan","exempt","excused","dibebaskan","exercise","physical activity; to use","olahraga; menggunakan","exert","to apply","mengerahkan","exhale","to breathe out","menghembuskan","exhaust","to tire out; fumes","melelahkan; knalpot","exhaustible","finite","dapat habis","exhaustion","extreme tiredness","kelelahan","exhaustive","thorough","menyeluruh","exhibit","to display","memamerkan","exhibition","display","pameran","exhilarate","to thrill","menggembirakan","exhume","to dig up","menggali","exigency","urgent need","kebutuhan mendesak","exigent","urgent","mendesak","existence","being","keberadaan","existing","current","yang ada","exit","way out","pintu keluar"];
+    pushEntries(day27Raw);
+
+    function getVocabByDay(day) {
+        if (day === 'day25') return fullVocab.slice(0, 100);
+        if (day === 'day26') return fullVocab.slice(100, 200);
+        return fullVocab.slice(200, 300);
+    }
+
+    // Pre-built questions based on the original file format (Part A, Part B, Part C from Week 10)
+    const practiceQuestions = {
+        day25: {
+            partA: [
+                { text: "The company plans to ______ a new product next month.", options: ["eliminate", "embark", "launch", "emerge"], correct: "launch" },
+                { text: "The teacher tried to ______ the difficult concept with simple examples.", options: ["elucidate", "elapse", "embargo", "embed"], correct: "elucidate" },
+                { text: "Many governments try to ______ citizens to vote in elections.", options: ["elude", "encourage", "emigrate", "encroach"], correct: "encourage" },
+                { text: "The organization worked hard to ______ women in leadership roles.", options: ["empower", "emit", "endure", "emulate"], correct: "empower" },
+                { text: "The scientist decided to ______ unnecessary variables from the experiment.", options: ["enact", "encompass", "eliminate", "endorse"], correct: "eliminate" },
+                { text: "The traveler decided to ______ on a journey across Asia.", options: ["embark", "emerge", "employ", "encounter"], correct: "embark" },
+                { text: "New evidence began to ______ during the investigation.", options: ["endure", "emerge", "encircle", "embolden"], correct: "emerge" },
+                { text: "The law was passed to ______ environmental regulations.", options: ["engage", "enable", "enforce", "enact"], correct: "enforce" },
+                { text: "The article placed special ______ on the importance of teamwork.", options: ["elasticity", "emphasis", "emergency", "endurance"], correct: "emphasis" },
+                { text: "The charity hopes to ______ more volunteers this year.", options: ["engage", "emigrate", "emit", "elude"], correct: "engage" },
+                { text: "The company decided to ______ two hundred new workers.", options: ["employ", "endorse", "endanger", "emulate"], correct: "employ" },
+                { text: "The manager gave an ______ speech that motivated the staff.", options: ["elementary", "eloquent", "elastic", "enclosed"], correct: "eloquent" },
+                { text: "The bridge project will ______ several nearby communities.", options: ["embargo", "encompass", "elude", "endow"], correct: "encompass" },
+                { text: "Students must be ______ to apply for the scholarship.", options: ["endemic", "emphatic", "eligible", "elementary"], correct: "eligible" },
+                { text: "The organization publicly ______ the candidate's proposal.", options: ["endorse", "emit", "elicit", "emulate"], correct: "endorse" },
+                { text: "The hikers showed great ______ during the long climb.", options: ["emergency", "endurance", "emphasis", "elasticity"], correct: "endurance" },
+                { text: "The government introduced measures to protect ______ species.", options: ["emergent", "endangered", "elementary", "enclosed"], correct: "endangered" },
+                { text: "The teacher's question helped ______ useful responses from students.", options: ["elicit", "elude", "embrace", "emigrate"], correct: "elicit" },
+                { text: "The smoke detector will ______ a loud sound when activated.", options: ["encompass", "emerge", "emit", "enable"], correct: "emit" },
+                { text: "The policy was designed to ______ equal opportunities for all.", options: ["endanger", "enable", "embargo", "elapse"], correct: "enable" },
+                { text: "The city declared a state of ______ after the earthquake.", options: ["endurance", "emphasis", "emergency", "emergence"], correct: "emergency" },
+                { text: "Her positive attitude helped her ______ many difficulties.", options: ["endure", "elicit", "enact", "embolden"], correct: "endure" },
+                { text: "The manager tried to ______ the team after the setback.", options: ["emigrate", "encompass", "embolden", "embed"], correct: "embolden" },
+                { text: "The new policy will ______ schools to adopt better technology.", options: ["enable", "elapse", "embargo", "elude"], correct: "enable" },
+                { text: "The company plans to ______ several departments into one office.", options: ["encumber", "encompass", "embrace", "embed"], correct: "embed" }
+            ],
+            partB: [
+                { text: "To leave one's country and settle elsewhere.", options: ["Emigrate", "Endorse", "Engage", "Emerge"], correct: "Emigrate" },
+                { text: "A sudden serious situation requiring immediate action.", options: ["Emphasis", "Emergency", "Endurance", "Elasticity"], correct: "Emergency" },
+                { text: "To officially approve or support.", options: ["Embark", "Eliminate", "Endorse", "Elude"], correct: "Endorse" },
+                { text: "The ability to stretch and return to original shape.", options: ["Endurance", "Elasticity", "Emphasis", "Emergency"], correct: "Elasticity" },
+                { text: "To make someone stronger or more confident.", options: ["Embolden", "Elicit", "Enable", "Engage"], correct: "Embolden" },
+                { text: "To include or cover a wide range of things.", options: ["Emulate", "Encircle", "Endure", "Encompass"], correct: "Encompass" },
+                { text: "Having the qualifications necessary for something.", options: ["Eligible", "Elementary", "Emergent", "Endemic"], correct: "Eligible" },
+                { text: "To obtain a response or reaction.", options: ["Elude", "Elicit", "Embed", "Enclose"], correct: "Elicit" },
+                { text: "To start a journey or new activity.", options: ["Emerge", "Endow", "Embark", "Engage"], correct: "Embark" },
+                { text: "To continue despite hardship or difficulty.", options: ["Enforce", "Endure", "Elapse", "Enable"], correct: "Endure" },
+                { text: "To become visible or known.", options: ["Emerge", "Encroach", "Embody", "Enact"], correct: "Emerge" },
+                { text: "To put something into effect as a law.", options: ["Emigrate", "Endorse", "Enact", "Endow"], correct: "Enact" },
+                { text: "To make possible or allow.", options: ["Enable", "Elicit", "Enclose", "Engage"], correct: "Enable" },
+                { text: "To officially prohibit trade or activities.", options: ["Endowment", "Embargo", "Emblem", "Emigration"], correct: "Embargo" },
+                { text: "A clear and persuasive way of speaking.", options: ["Elegy", "Elocution", "Encyclopedia", "Emblem"], correct: "Elocution" }
+            ],
+            wordBank: ["elementary", "embrace", "emulate", "encyclopedia", "encounter", "embark", "endurance", "emerge", "engage", "empower", "eloquent", "endowment", "emblem", "encircle", "eliminate"]
+        },
+        day26: {
+            partA: [
+                { text: "The company hopes to ______ its online services to attract more customers.", options: ["eradicate", "enhance", "entwine", "enlist"], correct: "enhance" },
+                { text: "The government launched a campaign to ______ citizens in community programs.", options: ["enroll", "enrage", "ensure", "equalize"], correct: "enroll" },
+                { text: "The sudden discovery was an ______ that changed the scientist's perspective.", options: ["entity", "episode", "epiphany", "epoch"], correct: "epiphany" },
+                { text: "The museum plans to ______ the names of donors on a marble wall.", options: ["enshrine", "engrave", "enthrone", "envelope"], correct: "engrave" },
+                { text: "The manager tried to ______ employees by explaining the purpose of the project.", options: ["enlighten", "entice", "entail", "enrage"], correct: "enlighten" },
+                { text: "The new regulation will ______ additional reporting requirements.", options: ["entail", "ensure", "enlist", "entertain"], correct: "entail" },
+                { text: "The entrepreneur worked hard to build a successful ______.", options: ["entity", "episode", "enterprise", "equilibrium"], correct: "enterprise" },
+                { text: "The exciting performance managed to ______ the audience.", options: ["enthrall", "entangle", "enlist", "equip"], correct: "enthrall" },
+                { text: "Teachers should ______ students to participate actively in class discussions.", options: ["eradicate", "equip", "equalize", "enthuse"], correct: "enthuse" },
+                { text: "The company must ______ that all safety procedures are followed.", options: ["entice", "ensure", "enlighten", "envelop"], correct: "ensure" },
+                { text: "The detective tried to solve the mysterious ______.", options: ["enigma", "entity", "epidemic", "epilogue"], correct: "enigma" },
+                { text: "The government seeks to ______ poverty through education and job opportunities.", options: ["enroll", "equip", "eradicate", "entice"], correct: "eradicate" },
+                { text: "The speaker's passion generated great ______ among the audience.", options: ["enthusiasm", "equity", "equilibrium", "enormity"], correct: "enthusiasm" },
+                { text: "The company offered discounts to ______ customers into trying the new product.", options: ["ensure", "entice", "entwine", "equip"], correct: "entice" },
+                { text: "The scientist recorded each stage of the disease ______.", options: ["era", "episode", "epidemic", "epilogue"], correct: "episode" },
+                { text: "The country faced an ______ of influenza during the winter.", options: ["enigma", "episode", "epidemic", "entity"], correct: "epidemic" },
+                { text: "The report attempted to ______ all the major causes of the problem.", options: ["enumerate", "enhance", "enlist", "entangle"], correct: "enumerate" },
+                { text: "The school hopes to ______ students with the skills needed for future careers.", options: ["entice", "equip", "enthrone", "enrage"], correct: "equip" },
+                { text: "The two organizations decided to ______ their resources for a common goal.", options: ["entwine", "ensure", "enshrine", "eradicate"], correct: "entwine" },
+                { text: "The government aims to ______ access to education across all regions.", options: ["equalize", "equip", "entail", "enthrall"], correct: "equalize" },
+                { text: "The market crash caused many investors to feel ______.", options: ["enthusiastic", "enterprising", "enraged", "enraptured"], correct: "enraged" },
+                { text: "The engineer tried to achieve a balance or ______ in the system.", options: ["equity", "equilibrium", "entity", "era"], correct: "equilibrium" },
+                { text: "The famous inventor was known as an ______ thinker.", options: ["epidemic", "enterprising", "equitable", "epic"], correct: "enterprising" },
+                { text: "The policy was designed to create a more ______ distribution of resources.", options: ["equivalent", "equitable", "erratic", "epic"], correct: "equitable" },
+                { text: "The new law will ______ next year after approval.", options: ["ensue", "enlist", "enthrall", "entwine"], correct: "ensue" }
+            ],
+            partB: [
+                { text: "A person who starts and manages a business, often taking risks.", options: ["Entity", "Entrepreneur", "Equilibrium", "Envy"], correct: "Entrepreneur" },
+                { text: "To make larger in size or extent.", options: ["Enlarge", "Ensure", "Equip", "Equalize"], correct: "Enlarge" },
+                { text: "Great anger or fury.", options: ["Enthusiasm", "Equity", "Enrage", "Enmity"], correct: "Enrage" },
+                { text: "A thing with distinct existence.", options: ["Era", "Epidemic", "Episode", "Entity"], correct: "Entity" },
+                { text: "Fairness and justice in treatment.", options: ["Equity", "Equivalent", "Epoch", "Epic"], correct: "Equity" },
+                { text: "The concluding section of a literary work.", options: ["Epitaph", "Epigram", "Epilogue", "Episode"], correct: "Epilogue" },
+                { text: "Extremely large in size or amount.", options: ["Equitable", "Enormous", "Erudite", "Entire"], correct: "Enormous" },
+                { text: "A period of history marked by particular events.", options: ["Era", "Epoch", "Episode", "Entity"], correct: "Era" },
+                { text: "To officially preserve or protect something as valuable.", options: ["Enshrine", "Enthuse", "Envelop", "Entice"], correct: "Enshrine" },
+                { text: "A widespread outbreak of disease.", options: ["Entity", "Enigma", "Epidemic", "Episode"], correct: "Epidemic" },
+                { text: "Having great knowledge gained through study.", options: ["Erratic", "Erudite", "Equitable", "Enterprising"], correct: "Erudite" },
+                { text: "To avoid completely or deliberately stay away from.", options: ["Escort", "Ensure", "Equip", "Eschew"], correct: "Eschew" },
+                { text: "The basic nature or most important quality of something.", options: ["Essence", "Equity", "Epoch", "Entity"], correct: "Essence" },
+                { text: "A brief and clever statement.", options: ["Epitaph", "Episode", "Epigram", "Era"], correct: "Epigram" },
+                { text: "A short inscription on a tombstone.", options: ["Epitaph", "Epilogue", "Enigma", "Epoch"], correct: "Epitaph" }
+            ],
+            wordBank: ["entrepreneur", "environment", "era", "enlist", "episode", "equivalent", "enmity", "escort", "entire", "epidemic", "equip", "essence", "erratic", "envy", "engrave"]
+        },
+        day27: {
+            partA: [
+                { text: "Scientists continue to study how species ______ over time.", options: ["evoke", "evolve", "evict", "evade"], correct: "evolve" },
+                { text: "The company plans to ______ a new branch in the city next year.", options: ["establish", "exhaust", "exhibit", "exclude"], correct: "establish" },
+                { text: "The teacher asked students to ______ the historical document carefully.", options: ["exceed", "evoke", "examine", "exchange"], correct: "examine" },
+                { text: "The discovery provided strong ______ for the scientist's theory.", options: ["evaluation", "evidence", "event", "evolution"], correct: "evidence" },
+                { text: "The hot weather caused the water to ______ quickly.", options: ["evaporate", "evolve", "exert", "evict"], correct: "evaporate" },
+                { text: "The loud noise seemed to ______ unpleasant memories.", options: ["establish", "evoke", "exempt", "exchange"], correct: "evoke" },
+                { text: "Good communication skills are ______ for effective leadership.", options: ["excessive", "essential", "exact", "eternal"], correct: "essential" },
+                { text: "The construction project may ______ traffic problems in the area.", options: ["exacerbate", "excel", "evade", "exhibit"], correct: "exacerbate" },
+                { text: "The athlete worked hard to ______ in the national competition.", options: ["exhaust", "evince", "excel", "evolve"], correct: "excel" },
+                { text: "The museum will ______ rare artifacts from ancient civilizations.", options: ["exhibit", "exempt", "evade", "establish"], correct: "exhibit" },
+                { text: "The government decided to ______ several families from unsafe buildings.", options: ["evoke", "evict", "evolve", "evade"], correct: "evict" },
+                { text: "The manager asked the team to provide an ______ cost estimate.", options: ["exact", "eventual", "exceptional", "excessive"], correct: "exact" },
+                { text: "Students must ______ effort if they want to improve their grades.", options: ["exceed", "exert", "exchange", "exclude"], correct: "exert" },
+                { text: "The new policy will ______ certain employees from the requirement.", options: ["evade", "exhibit", "exempt", "establish"], correct: "exempt" },
+                { text: "The researcher conducted a detailed ______ of the program.", options: ["event", "evolution", "evaluation", "exception"], correct: "evaluation" },
+                { text: "The storm caused ______ damage to homes and businesses.", options: ["excitable", "exceptional", "excessive", "exact"], correct: "excessive" },
+                { text: "The company hopes to ______ last year's sales figures.", options: ["exceed", "evade", "evoke", "exchange"], correct: "exceed" },
+                { text: "The speaker's story seemed to ______ sympathy from the audience.", options: ["exact", "evince", "evolve", "establish"], correct: "evince" },
+                { text: "The students went on an educational ______ to the science museum.", options: ["exclusion", "excursion", "exhibition", "excerpt"], correct: "excursion" },
+                { text: "The witness tried to ______ answering the difficult question.", options: ["evade", "excel", "evoke", "exempt"], correct: "evade" },
+                { text: "The manager praised her for her ______ performance.", options: ["eventual", "excessive", "excellent", "evident"], correct: "excellent" },
+                { text: "The fire left the workers suffering from heat ______.", options: ["evolution", "exhaustion", "evaluation", "excellence"], correct: "exhaustion" },
+                { text: "The scientist shared an ______ from a famous journal article.", options: ["excerpt", "excursion", "exception", "exhibit"], correct: "excerpt" },
+                { text: "The rule applies to everyone without ______.", options: ["event", "exception", "evidence", "evolution"], correct: "exception" },
+                { text: "The passengers agreed to ______ seats during the trip.", options: ["exchange", "evade", "exceed", "exert"], correct: "exchange" }
+            ],
+            partB: [
+                { text: "A careful inspection or test.", options: ["Event", "Evaluation", "Examination", "Evolution"], correct: "Examination" },
+                { text: "To remove or force someone out from property.", options: ["Evict", "Evoke", "Evade", "Evolve"], correct: "Evict" },
+                { text: "Lasting forever.", options: ["Eventual", "Exceptional", "Eternal", "Evident"], correct: "Eternal" },
+                { text: "Clearly seen or understood.", options: ["Evident", "Exact", "Existing", "Eventual"], correct: "Evident" },
+                { text: "To make something worse.", options: ["Evade", "Exacerbate", "Exert", "Exhibit"], correct: "Exacerbate" },
+                { text: "A public display of objects or works.", options: ["Exhibit", "Exhibition", "Excerpt", "Excursion"], correct: "Exhibition" },
+                { text: "To leave out or prevent from participating.", options: ["Exchange", "Evoke", "Exclude", "Exceed"], correct: "Exclude" },
+                { text: "An event or occurrence.", options: ["Evolution", "Event", "Evidence", "Exception"], correct: "Event" },
+                { text: "Better than usual; outstanding.", options: ["Evident", "Excessive", "Exceptional", "Exact"], correct: "Exceptional" },
+                { text: "The process of gradual development or change.", options: ["Evolution", "Evaluation", "Eventual", "Evasion"], correct: "Evolution" },
+                { text: "To show or display clearly.", options: ["Evict", "Evade", "Evince", "Evoke"], correct: "Evince" },
+                { text: "To free someone from a duty or obligation.", options: ["Exempt", "Exceed", "Exchange", "Examine"], correct: "Exempt" },
+                { text: "Great tiredness from physical or mental effort.", options: ["Excellence", "Exhaustion", "Exigency", "Exclusion"], correct: "Exhaustion" },
+                { text: "A short passage taken from a book or article.", options: ["Excursion", "Exception", "Exhibit", "Excerpt"], correct: "Excerpt" },
+                { text: "To become better than others in performance or achievement.", options: ["Evade", "Evolve", "Excel", "Exert"], correct: "Excel" }
+            ],
+            wordBank: ["exercise", "evidence", "excite", "evolve", "estimate", "exit", "environment", "eventual", "examination", "esteem", "exact", "event", "essential", "excerpt", "exceed"]
+        }
+    };
+
+    // Global state
+    let currentDay = 'day25';
+    let student = { name: '', id: '', program: '' };
+    let listTimerInterval = null, drillTimerInterval = null;
+    let listTime = 300;
+    let drillTime = 1500;
+    let drillActive = false;
+    let submitted = false;
+    let tabViolations = 0;
+    let selectedAnswers = {};
+    let currentQuestionsStore = { partA: [], partB: [], partC: [] };
+
+    const loginDiv = document.getElementById('loginPage');
+    const listDiv = document.getElementById('vocabListPage');
+    const drillDiv = document.getElementById('drillPage');
+    const summaryPopup = document.getElementById('summaryPopup');
+
+    function clearAllTimers() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+    }
+
+    // Anti-cheat system
+    function initAntiCheat() {
+        window.addEventListener('blur', () => { if (drillActive && !submitted) handleViolation(); });
+        document.addEventListener('visibilitychange', () => { if (document.hidden && drillActive && !submitted) handleViolation(); });
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (drillActive && !submitted && (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's')))) {
+                e.preventDefault();
+                alert("⚠️ Screenshot/print actions are disabled during the drill.");
+            }
+        });
+        let resizeCount = 0;
+        window.addEventListener('resize', () => {
+            if (drillActive && !submitted && window.innerWidth < 800) {
+                resizeCount++;
+                if (resizeCount === 1) alert("⚠️ Please maintain full window for the exam.");
+                else if (resizeCount >= 2) handleViolation();
+            }
+        });
+    }
+
+    function handleViolation() {
+        tabViolations++;
+        if (tabViolations === 1) alert("⚠️ WARNING: Leaving the drill page is prohibited. Next violation will auto-submit.");
+        else if (tabViolations >= 2) {
+            alert("❌ FORCE SUBMISSION: You violated the policy. Test is auto-submitted.");
+            forceSubmitDrill();
+        }
+    }
+
+    function forceSubmitDrill() {
+        if (submitted) return;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        submitted = true;
+        drillActive = false;
+        gatherAndShowSummary();
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const name = document.getElementById('studentName').value.trim();
+        const id = document.getElementById('studentId').value.trim();
+        const prog = document.getElementById('studyProgram').value.trim();
+        if (!name || !id || !prog) { alert("Please fill all fields."); return; }
+        student = { name, id, program: prog };
+        currentDay = document.getElementById('daySelect').value;
+        loginDiv.classList.add('hidden');
+        listDiv.classList.remove('hidden');
+        renderVocabList();
+        startListTimer();
+    });
+
+    function renderVocabList() {
+        const vocab = getVocabByDay(currentDay);
+        const container = document.getElementById('vocabListContainer');
+        container.innerHTML = '';
+        let dayLabel = currentDay.toUpperCase();
+        document.getElementById('listDayLabel').innerText = dayLabel;
+        vocab.forEach(v => {
+            const div = document.createElement('div'); div.className = 'vocab-item';
+            div.innerHTML = `<div class="vocab-word">${v.word}</div><div>📖 ${v.eng} &nbsp;—&nbsp; 🇮🇩 ${v.ind}</div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function startListTimer() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        listTimerInterval = setInterval(() => {
+            if (listTime <= 0) {
+                clearInterval(listTimerInterval);
+                alert("Time for vocabulary review finished! Moving to drill.");
+                proceedToDrill();
+            } else {
+                listTime--;
+                let mins = Math.floor(listTime / 60);
+                let secs = listTime % 60;
+                document.getElementById('listTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    document.getElementById('proceedToDrillBtn').addEventListener('click', () => {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        proceedToDrill();
+    });
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function proceedToDrill() {
+        listDiv.classList.add('hidden');
+        drillDiv.classList.remove('hidden');
+        buildDrillQuestions();
+        startDrillTimer();
+        drillActive = true;
+        submitted = false;
+        tabViolations = 0;
+    }
+
+    function buildDrillQuestions() {
+        const dayData = practiceQuestions[currentDay];
+        if (!dayData) return;
+        
+        const shuffledPartA = shuffleArray([...dayData.partA]);
+        const shuffledPartB = shuffleArray([...dayData.partB]);
+        const wordBankList = shuffleArray([...dayData.wordBank]);
+        
+        currentQuestionsStore = {
+            partA: shuffledPartA.map(q => q.text),
+            partB: shuffledPartB.map(q => q.text),
+            partC: []
+        };
+        
+        const container = document.getElementById('drillQuestionsContainer');
+        container.innerHTML = '';
+        selectedAnswers = {};
+        
+        const titleA = document.createElement('h3'); titleA.className = 'section-title'; titleA.innerText = 'Part A: Fill in the blanks (Questions 1-25)';
+        container.appendChild(titleA);
+        
+        shuffledPartA.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${idx + 1}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partA_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partA_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const titleB = document.createElement('h3'); titleB.className = 'section-title'; titleB.innerText = 'Part B: Choose the correct definition (Questions 26-40)';
+        container.appendChild(titleB);
+        
+        shuffledPartB.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${26 + idx}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partB_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partB_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const bankDiv = document.createElement('div'); bankDiv.className = 'wordbank-box';
+        bankDiv.innerHTML = `<strong>📦 WORD BANK (For questions 41-50):</strong><br/>` + wordBankList.map(w => `<span class="wordbank-word">${w}</span>`).join('');
+        container.appendChild(bankDiv);
+        
+        const titleC = document.createElement('h3'); titleC.className = 'section-title'; titleC.innerText = 'Part C: Fill in the blanks using the Word Bank (Questions 41-50)';
+        container.appendChild(titleC);
+        
+        const partCSentences = {
+            day25: [
+                "Students are encouraged to ______ new learning opportunities.",
+                "The village received an ______ from a wealthy donor.",
+                "The hikers needed great ______ to finish the trail.",
+                "The national flag is an important ______ of the country.",
+                "The children used an ______ to find information about animals.",
+                "The company decided to ______ outdated procedures.",
+                "The speaker delivered an ______ presentation.",
+                "The army planned to ______ the city from all sides.",
+                "Young athletes often ______ their favorite sports stars.",
+                "Researchers may ______ unexpected problems during fieldwork."
+            ],
+            day26: [
+                "The company decided to ______ several volunteers to help with the event.",
+                "The guide will ______ visitors through the historical site.",
+                "The artist will ______ her signature on the sculpture.",
+                "The factory must reduce pollution to protect the ______.",
+                "His success made some of his classmates feel ______.",
+                "The disease spread quickly and became an ______.",
+                "The scientist's behavior became increasingly ______ and unpredictable.",
+                "The training program will ______ workers with practical skills.",
+                "The smartphone is considered the symbol of a new technological ______.",
+                "Trust is the ______ of a strong friendship."
+            ],
+            day27: [
+                "Regular ______ is important for maintaining good health.",
+                "The police found enough ______ to continue the investigation.",
+                "The students became very ______ about the upcoming trip.",
+                "The scientists believe these organisms continue to ______.",
+                "The manager gave a rough ______ of the project's cost.",
+                "Everyone must use the emergency ______ during a fire drill.",
+                "Protecting the natural ______ is everyone's responsibility.",
+                "The company hopes for the ______ success of the project.",
+                "The professor prepared a difficult ______ for the final assessment.",
+                "Many people ______ the teacher because of her dedication."
+            ]
+        };
+        
+        const sentences = partCSentences[currentDay] || partCSentences.day25;
+        const shuffledSentences = shuffleArray([...sentences]);
+        currentQuestionsStore.partC = shuffledSentences;
+        
+        shuffledSentences.forEach((sentence, idx) => {
+            const fbDiv = document.createElement('div'); fbDiv.className = 'question-card';
+            fbDiv.innerHTML = `
+                <div class="question-text">${41 + idx}. ${sentence}</div>
+                <input type="text" placeholder="Type a word from the Word Bank above" data-fb-idx="${idx}" style="width:100%; background:#0a0e1a; border:1px solid #3a4468; padding:12px; border-radius:16px;">`;
+            const inputField = fbDiv.querySelector('input');
+            inputField.addEventListener('input', (e) => { selectedAnswers[`partC_${idx}`] = e.target.value.trim(); });
+            container.appendChild(fbDiv);
+        });
+    }
+
+    function startDrillTimer() {
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        drillTimerInterval = setInterval(() => {
+            if (drillTime <= 0) {
+                clearInterval(drillTimerInterval);
+                if (!submitted) { alert("⏰ Time's up! Auto-submitting."); forceSubmitDrill(); }
+            } else {
+                drillTime--;
+                let mins = Math.floor(drillTime / 60);
+                let secs = drillTime % 60;
+                document.getElementById('drillTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    function gatherAndShowSummary() {
+        if (submitted) return;
+        submitted = true;
+        drillActive = false;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        
+        let summaryHtml = `<div class="print-pattern">
+            <h3>📋 ANSWER SUMMARY — ${student.name} (${student.id})</h3>
+            <p><strong>Program:</strong> ${student.program} | <strong>Day:</strong> ${currentDay.toUpperCase()} | <strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+            <hr>
+            <h4>Part A: Fill in the blanks (Questions 1-25)</h4>`;
+        
+        for (let i = 0; i < 25; i++) {
+            let ans = selectedAnswers[`partA_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partA[i] || `Question ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${i+1}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part B: Choose the correct definition (Questions 26-40)</h4>`;
+        for (let i = 0; i < 15; i++) {
+            let ans = selectedAnswers[`partB_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partB[i] || `Definition ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${26 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part C: Fill in the blank using Word Bank (Questions 41-50)</h4>`;
+        for (let i = 0; i < 10; i++) {
+            let ans = selectedAnswers[`partC_${i}`] || "(empty)";
+            let questionText = currentQuestionsStore.partC[i] || `Fill in the blank ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${41 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><footer style="margin-top:20px;">VOCAB DRILL — Week 10 Official Assessment Report | Generated from secure testing platform</footer></div>`;
+        document.getElementById('summaryContent').innerHTML = summaryHtml;
+        summaryPopup.classList.remove('hidden');
+    }
+
+    document.getElementById('submitDrillBtn').addEventListener('click', () => {
+        if (submitted) { alert("Already submitted."); return; }
+        gatherAndShowSummary();
+    });
+    document.getElementById('closeSummaryBtn').addEventListener('click', () => summaryPopup.classList.add('hidden'));
+    document.getElementById('printSummaryBtn').addEventListener('click', () => {
+        const printContents = document.getElementById('summaryContent').innerHTML;
+        const win = window.open();
+        win.document.write(`
+            <html><head><title>Vocab Drill Summary - ${student.name}</title>
+            <style>
+                body { font-family: 'Courier New', monospace, sans-serif; padding: 2rem; background: white; }
+                .print-pattern { background: repeating-linear-gradient(45deg, #f4f6fc 0px, #f4f6fc 3px, #fff 3px, #fff 15px); padding: 20px; border-radius: 12px; }
+                h3, h4 { color: #1e293b; }
+                .summary-question { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+                .summary-answer { margin-left: 20px; color: #475569; }
+                strong { color: #0f172a; }
+            </style>
+            </head><body>${printContents}</body></html>
+        `);
+        win.document.close();
+        win.print();
+    });
+    initAntiCheat();
+</script>
+</body>
+</html>
